@@ -14,7 +14,8 @@ class CARDHUB_API ACard : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ACard();
-	ACard(int InValue, FString InSuit, FString InColor, bool InHidden, AActor* InOwner);
+	
+	void Initialize(int InValue, FString InSuit, FString InColor, bool InHidden, AActor* InOwner);
 
 	struct FCardInfo GetCardInfo();
 
@@ -24,7 +25,7 @@ public:
 
 	void SetIsHidden(bool hidden) { m_bIsHidden = hidden; }
 
-protected:
+//protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -34,8 +35,11 @@ protected:
 	UPROPERTY()
 	class UPaperSprite* backSprite;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UPaperSpriteComponent* Sprite;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class USceneComponent* Root;
 
 	UPROPERTY()
 	AActor* CardOwner;
