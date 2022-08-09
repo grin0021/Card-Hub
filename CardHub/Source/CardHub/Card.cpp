@@ -23,8 +23,7 @@ ACard::ACard()
 
 	Sprite->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Sprite->AttachTo(Root);
-
-	Initialize(1, "Clubs", "Black", true, nullptr);
+	Sprite->SetVisibility(false);
 }
 
 void ACard::Initialize(int InValue, FString InSuit, FString InColor, bool InHidden, AActor* InOwner)
