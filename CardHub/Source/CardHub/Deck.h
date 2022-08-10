@@ -15,12 +15,17 @@ public:
 	// Sets default values for this actor's properties
 	ADeck();
 
+	void Shuffle();
+	void AddCard(class ACard* card);
+	class ACard* DrawCard();
+
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UPROPERTY()
+	USceneComponent* Root;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY()
+	class UPaperSpriteComponent* Sprite;
 
+private:
+	TArray<class ACard*> m_cards;
 };

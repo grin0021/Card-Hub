@@ -15,7 +15,7 @@ public:
 	// Sets default values for this actor's properties
 	ACard();
 	
-	void Initialize(int InValue, FString InSuit, FString InColor, bool InHidden, AActor* InOwner);
+	void Initialize(int InValue, FString InSuit, bool InHidden, AActor* InOwner);
 
 	struct FCardInfo GetCardInfo();
 
@@ -25,7 +25,9 @@ public:
 
 	void SetIsHidden(bool hidden) { m_bIsHidden = hidden; }
 
-//protected:
+	bool bShuffled = false;
+
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -39,7 +41,7 @@ public:
 	class UPaperSpriteComponent* Sprite;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class USceneComponent* Root;
+	USceneComponent* Root;
 
 	UPROPERTY()
 	AActor* CardOwner;
@@ -48,5 +50,4 @@ private:
 	int m_value;
 	bool m_bIsHidden;
 	FString m_suit;
-	FString m_color;
 };

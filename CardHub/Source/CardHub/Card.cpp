@@ -3,10 +3,10 @@
 
 #include "Card.h"
 #include "CardHub.h"
-#include "UObject/ConstructorHelpers.h"
+#include "EngineUtils.h"
 #include "PaperSpriteComponent.h"
-#include "Components/SceneComponent.h"
 #include "PaperSprite.h"
+#include "SpriteContainer.h"
 
 // Sets default values
 ACard::ACard()
@@ -14,45 +14,44 @@ ACard::ACard()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root")); 
 	check(Root);
 	SetRootComponent(Root);
 
-	Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Sprite"));
+	Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Sprite")); 
 	check(Sprite);
-
 	Sprite->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Sprite->AttachTo(Root);
-	Sprite->SetVisibility(false);
+
+	ConstructorHelpers::FObjectFinder<UPaperSprite> backFace(TEXT("/Game/Sprites/Clean/CardBack.CardBack"));
+
+	if (backFace.Succeeded())
+	{
+		backSprite = backFace.Object;
+	}
+	
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
 }
 
-void ACard::Initialize(int InValue, FString InSuit, FString InColor, bool InHidden, AActor* InOwner)
+void ACard::Initialize(int InValue, FString InSuit, bool InHidden, AActor* InOwner)
 {
 	m_value = InValue;
 	m_suit = InSuit;
-	m_color = InColor;
 	m_bIsHidden = InHidden;
 	CardOwner = InOwner;
 
-	FString path = "/Game/Sprites/Clean/" + m_suit + "/" + FString::FromInt(m_value) + "." + FString::FromInt(m_value);
-
-	// TODO: Import assets and add valid asset paths for these object finders
-	ConstructorHelpers::FObjectFinder<UPaperSprite> myFrontSprite(*path);
-	ConstructorHelpers::FObjectFinder<UPaperSprite> myBackSprite(TEXT("/Game/Sprites/Clean/CardBack.CardBack"));
-
-	//if (myFrontSprite.Succeeded() && myBackSprite.Succeeded())
+	if (m_bIsHidden)
 	{
-		//frontSprite = myFrontSprite.Object;
-		backSprite = myBackSprite.Object;
+		Sprite->SetSprite(backSprite);
+		return;
+	}
 
-		if (InHidden)
-		{
-			Sprite->SetSprite(backSprite);
-		}
-		else
-		{
-			Sprite->SetSprite(frontSprite);
-		}
+	for (TActorIterator<ASpriteContainer>ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		ASpriteContainer* spriteCont = Cast<ASpriteContainer>(*ActorItr);
+	
+		Sprite->SetSprite(spriteCont->GetSprite(m_suit, m_value));
 	}
 }
 
@@ -80,7 +79,7 @@ void ACard::OnDragEnd()
 
 FCardInfo ACard::GetCardInfo()
 {
-	FCardInfo info = FCardInfo(m_value, m_suit, m_color);
+	FCardInfo info = FCardInfo(m_value, m_suit);
 
 	return info;
 }

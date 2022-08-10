@@ -10,10 +10,9 @@ struct FCardInfo
 {
 	GENERATED_BODY()
 
-	FCardInfo() : Value(0), Suit(TEXT("")), Color(TEXT("")) {}
-	FCardInfo(int InValue, FString InSuit, FString InColor) : Value(InValue), Suit(InSuit), Color(InColor) {}
+	FCardInfo() : Value(0), Suit(TEXT("")) {}
+	FCardInfo(int InValue, FString InSuit) : Value(InValue), Suit(InSuit) {}
 
 	int Value;
 	FString Suit;
-	FString Color;
 };
